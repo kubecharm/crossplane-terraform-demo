@@ -1,0 +1,8 @@
+apiVersion: examples.kubecharm.com/v1alpha1
+kind: NginxApp
+metadata:
+  name: nginx-app-staging
+spec:
+  env: stag1
+  compositionRef:
+    name: nginx-app

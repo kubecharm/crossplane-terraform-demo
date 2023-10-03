@@ -1,0 +1,30 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: nginx-app
+  labels:
+    crossplane.io/xrd: xnginxapps.examples.kubecharm.com
+spec:
+  compositeTypeRef:
+    apiVersion: examples.kubecharm.com/v1alpha1
+    kind: XNginxApp
+  resources:
+  - name: nginx-app
+    base:
+      kind: Workspace
+      apiVersion: tf.upbound.io/v1beta1
+      metadata:
+        annotations:
+          crossplane.io/external-name: default
+      spec:
+        providerConfigRef:
+          name: terraform-default
+        forProvider:
+          source: Remote
+          module: git::https://github.com/kubecharm/crossplane-terraform-demo.git//terraform/nginx-app?ref=master
+          vars:
+          - key: environment
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.env
+      toFieldPath: spec.forProvider.vars[0].value
